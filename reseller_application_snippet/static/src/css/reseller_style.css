@@ -1,0 +1,314 @@
+
+
+/* Main Section Styling */
+.s_reseller_application {
+    position: relative;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 30vh;
+}
+
+/* Header Section */
+.reseller-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.reseller-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0d6efd;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reseller-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+}
+
+/* Become Reseller Button */
+#become-reseller-btn {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#become-reseller-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+    background-color: #0b5ed7;
+}
+
+#become-reseller-btn:active {
+    transform: translateY(0);
+}
+
+/* Form Section */
+#reseller-form-section {
+    margin-top: 2rem;
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form Card */
+#reseller-form-section .card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+#reseller-form-section .card-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    padding: 1.5rem;
+    border-bottom: none;
+}
+
+#reseller-form-section .card-header h4 {
+    margin: 0;
+    font-weight: 600;
+}
+
+#reseller-form-section .card-body {
+    padding: 2rem;
+    background-color: #ffffff;
+}
+
+/* Form Styling */
+#reseller-application-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+#reseller-application-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+#reseller-application-form .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+#reseller-application-form .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    background-color: #ffffff;
+}
+
+#reseller-application-form .form-control::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* Textarea specific styling */
+#reseller-application-form textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Form Buttons */
+.form-group button {
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    margin: 0 5px;
+    min-width: 150px;
+}
+
+.form-group button[type="submit"] {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.form-group button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.form-group button[type="submit"]:disabled {
+    opacity: 0.7;
+    transform: none;
+    cursor: not-allowed;
+}
+
+#cancel-form-btn {
+    background-color: #6c757d;
+    border: none;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+#cancel-form-btn:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+/* Message Section */
+#message-section {
+    margin-top: 2rem;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#form-message {
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+#form-message.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+}
+
+#form-message.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f1b0b7 100%);
+    color: #721c24;
+}
+
+/* Loading State */
+.btn .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .reseller-title {
+        font-size: 2rem;
+    }
+    
+    .reseller-subtitle {
+        font-size: 1rem;
+    }
+    
+    #become-reseller-btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+    
+    #reseller-form-section .card-body {
+        padding: 1.5rem;
+    }
+    
+    .form-group button {
+        min-width: 120px;
+        margin: 5px 0;
+        display: block;
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .s_reseller_application {
+        padding: 3rem 0;
+    }
+    
+    .reseller-title {
+        font-size: 1.75rem;
+    }
+    
+    #become-reseller-btn {
+        padding: 10px 25px;
+        font-size: 0.95rem;
+    }
+    
+    #reseller-form-section .card-body {
+        padding: 1rem;
+    }
+    
+    #reseller-form-section .card-header {
+        padding: 1rem;
+    }
+    
+    #reseller-form-section .card-header h4 {
+        font-size: 1.1rem;
+    }
+}
+
+/* Accessibility Improvements */
+.form-control:focus,
+button:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* Smooth Transitions */
+* {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Icon Styling */
+.fa {
+    margin-right: 8px;
+}
+
+/* Form Validation States */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    background-color: #f0fff4;
+}
+
+/* Custom Scrollbar for Textarea */
+textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

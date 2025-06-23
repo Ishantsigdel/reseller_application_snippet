@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="s_reseller_application" name="Reseller Application">
+        <section class="s_reseller_application d-flex align-items-center" style="height: 100px; width: 100%; background-color: #f8f9fa;">
+            <div class="container h-100 d-flex flex-column justify-content-between">
+                <div class="row justify-content-start text-start">
+                    <div class="col-md-6">
+                        <h2 class="text-primary mb-3">Join Our Reseller Network</h2>
+                        <p class="lead text-muted mb-4">
+                            Partner with us and grow your business. Apply to become an authorized reseller
+                            and unlock exclusive benefits, competitive pricing, and dedicated support.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row justify-content-end">
+                    <div class="col-md-6 text-end">
+                        <button type="button" class="btn btn-primary btn-lg" id="become-reseller-btn">
+                            <i class="fa fa-handshake-o me-2"></i>
+                            Become a Reseller
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="resellerModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Reseller Application</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="reseller-form">
+                                    <div class="mb-3">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" name="name" required=""/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-control" name="email" required=""/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" name="phone"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Company Name</label>
+                                        <input type="text" class="form-control" name="company_name"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Why do you want to become a reseller?</label>
+                                        <textarea class="form-control" name="reason" rows="3"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" id="submit-application">Submit Application</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <!-- <div class="row" id="message-section" style="display: none;">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="alert" id="form-message" role="alert"></div>
+                    </div>
+                </div> -->
+            </div>
+        </section>
+
+    </template>
+</odoo>
