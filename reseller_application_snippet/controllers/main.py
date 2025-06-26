@@ -47,9 +47,9 @@ class ResellerController(http.Controller):
             })
             
         except Exception as e:
-            return json.dumps({
+            return json.dumps({ #converts a Python object into a JSON-formatted string
                 'success': False,
-                'message': 'Error occurred while submitting your application.'
+                'message': f'Error occurred while submitting your application. {e}'
             })
     
     @http.route('/reseller/check', type='json', auth='public', methods=['POST'], website=True)

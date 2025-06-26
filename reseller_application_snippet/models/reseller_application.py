@@ -1,6 +1,7 @@
 from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
+import re  
 
 
 class ResellerApplication(models.Model):
@@ -11,8 +12,8 @@ class ResellerApplication(models.Model):
 
     send_approval_email = fields.Boolean("Send Approval Email", default=False)
 
-    name = fields.Char("Full Name", required=True)
-    email = fields.Char("Email", required=True)
+    name = fields.Char("Full Name", required=True, tracking=True)
+    email = fields.Char("Email", required=True, tracking=True)
     phone = fields.Char("Phone Number")
     company_name = fields.Char("Company Name")
     reason = fields.Text("Reason for Applying")
@@ -25,6 +26,7 @@ class ResellerApplication(models.Model):
         ],
         default="draft",
         string="Status",
+        tracking=True,
     )
     application_date = fields.Datetime("Application Date", default=fields.Datetime.now)
 
@@ -34,49 +36,155 @@ class ResellerApplication(models.Model):
     approved_by = fields.Many2one("res.users", string="Approved By", readonly=True)
     approved_date = fields.Datetime("Approved Date", readonly=True)
 
+    @api.constrains('email')
+    def _check_email_format(self):
+        for record in self:
+            if record.email and '@' not in record.email:
+                raise ValidationError("Email must contain '@' symbol.")
+            
+            if record.email:
+                email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+                if not re.match(email_pattern, record.email):
+                    raise ValidationError("Please enter a valid email address.")
+
+    @api.constrains('phone')
+    def _check_phone_format(self):
+        for record in self:
+            if record.phone:
+                if not any(char.isdigit() for char in record.phone):
+                    raise ValidationError("Phone number must contain at least one digit.")
+                
+                if record.phone.isalpha():
+                    raise ValidationError("Phone number cannot contain only letters.")
+
+    def action_submit(self):
+        """Submit application with validation and notification"""
+        for record in self:
+            # Validate required fields
+            if not record.email or not record.phone:
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Missing Required Fields',
+                        'message': 'Email and Phone are required to submit the application.',
+                        'type': 'danger',
+                        'sticky': True,
+                    }
+                }
+            
+            # Email validation
+            if '@' not in record.email:
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Invalid Email',
+                        'message': 'Email must contain "@" symbol to submit the application.',
+                        'type': 'danger',
+                        'sticky': True,
+                    }
+                }
+            
+            # Phone validation
+            if not any(char.isdigit() for char in record.phone):
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Invalid Phone',
+                        'message': 'Phone number must contain at least one digit.',
+                        'type': 'danger',
+                        'sticky': True,
+                    }
+                }
+            
+            # Update state
+            record.state = 'submitted'
+            record.message_post(body="Application submitted for review.")
+            
+            # Success notification
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Success!',
+                    'message': f'Application for {record.name} has been submitted successfully.',
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+
     def action_approve(self):
+        """Approve application with notification"""
         for record in self:
             if record.state != "submitted":
-                continue
-
-            # Create partner
-            partner = record._create_partner()
-
-            # Create portal user
-            user = record._create_portal_user(partner)
-
-            # Update record with all the necessary information
-            record.write(
-                {
-                    "state": "approved",
-                    "partner_id": partner.id,
-                    "user_id": user.id,
-                    "approved_by": self.env.user.id,
-                    "approved_date": fields.Datetime.now(),
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Action Not Allowed',
+                        'message': 'Only submitted applications can be approved.',
+                        'type': 'warning',
+                        'sticky': False,
+                    }
                 }
-            )
-
-            # Log the approval with multiple access options
+            
+            partner = record._create_partner()
+            user = record._create_portal_user(partner)
+            
+            # Update record with all the necessary information
+            record.write({
+                "state": "approved",
+                "partner_id": partner.id,
+                "user_id": user.id,
+                "approved_by": self.env.user.id,
+                "approved_date": fields.Datetime.now(),
+            })
+            
             base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-            # import pdb; pdb.set_trace()
             portal_url = f"{base_url}/my"
-
+            
             if record.send_approval_email:
                 record._send_approval_email(user)
             else:
                 record.message_post(
-                    body=f"Reseller application approved.<br/>"
-                    f"Portal user created: <strong>{user.login}</strong><br/>"
-                    f"<a href='{portal_url}' target='_blank'>Open Portal (New Tab)</a><br/>"
-                    f"User ID: {user.id} | Partner ID: {partner.id}<br/>"
-                    f"(No email sent)",
+                    body=f"Reseller application approved. "
+                        f"Portal user created: **{user.login}** "
+                        f"<a href='{portal_url}' target='_blank' class='btn btn-primary btn-sm'>Open Portal (New Tab)</a> "
+                        f"User ID: {user.id} | Partner ID: {partner.id} "
+                        f"(No email sent)",
                     message_type="notification",
                 )
+            
+            # Return action to reload the current view and show notification
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'reload',
+                'params': {
+                    'notification': {
+                        'title': 'Application Approved!',
+                        'message': f'Reseller application for {record.name} has been approved successfully. Portal user created.',
+                        'type': 'success',
+                    }
+                }
+            }
 
     def action_reject(self):
+        """Reject application with notification"""
         for record in self:
             if record.state != "submitted":
-                continue
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Action Not Allowed',
+                        'message': 'Only submitted applications can be rejected.',
+                        'type': 'warning',
+                        'sticky': False,
+                    }
+                }
+            
             record.write(
                 {
                     "state": "rejected",
@@ -84,6 +192,41 @@ class ResellerApplication(models.Model):
                     "approved_date": fields.Datetime.now(),
                 }
             )
+
+            # Post message to chatter
+            record.message_post(
+                body=f"Application rejected. Reason: {record.rejection_reason or 'No reason provided'}",
+                message_type="notification",
+            )
+
+            # Rejection notification
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Application Rejected',
+                    'message': f'Application for {record.name} has been rejected.',
+                    'type': 'danger',
+                    'sticky': False,
+                }
+            }
+
+    def action_reset_to_draft(self):
+        """Reset application to draft state"""
+        for record in self:
+            record.state = 'draft'
+            record.message_post(body="Application reset to draft.")
+            
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Reset to Draft',
+                    'message': f'Application for {record.name} has been reset to draft state.',
+                    'type': 'info',
+                    'sticky': False,
+                }
+            }
 
     def _create_partner(self):
         partner_data = {
@@ -109,25 +252,19 @@ class ResellerApplication(models.Model):
             "partner_id": partner.id,
             "groups_id": [(6, 0, [portal_group.id])],
             "active": True,
-            # Don't set password - user will need to reset it manually
-            # 'password': False  # or omit this field entirely
         }
 
         user = self.env["res.users"].create(user_data)
-
-        # Optionally, prepare signup token for later use
         partner.signup_prepare()
 
         return user
 
     def action_impersonate_user(self):
-        """Allow admin to impersonate this portal user"""
         if not self.user_id:
             raise UserError(
                 "No portal user created yet. Please approve the application first."
             )
 
-        # Switch to portal user context
         return {
             "type": "ir.actions.act_window",
             "name": "Portal Dashboard",
@@ -136,24 +273,6 @@ class ResellerApplication(models.Model):
             "target": "main",
             "context": {"switch_to_user_id": self.user_id.id},
         }
-
-    # def action_preview_portal(self):
-    #     """Allow admin to preview portal as this user"""
-    #     if not self.user_id:
-    #         raise UserError(
-    #             "No portal user created yet. Please approve the application first."
-    #         )
-
-    #     base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
-
-    #     # Generate a one-time access token for admin preview
-    #     portal_url = f"{base_url}/my?preview_user={self.user_id.id}"
-
-    #     return {
-    #         "type": "ir.actions.act_url",
-    #         "url": portal_url,
-    #         "target": "new",
-    #     }
 
     def action_open_user_record(self):
         """Open the created portal user record"""
@@ -167,33 +286,3 @@ class ResellerApplication(models.Model):
             "view_mode": "form",
             "target": "new",
         }
-
-    # def _send_approval_email(self, user):
-    #     """Send approval email to the applicant"""
-    #     try:
-    #         email_values = {
-    #             "subject": "Your Reseller Application is Approved!",
-    #             "body_html": f"""
-    #                 <p>Hello <strong>{self.name}</strong>,</p>
-    #                 <p>Great news! Your reseller application has been approved.</p>
-    #                 <p>You can now access your reseller portal at: <a href="/my/reseller">Login Here</a></p>
-    #                 <p>Your login email: {self.email}</p>
-    #                 <p>Thank you for joining our reseller network!</p>
-    #             """,
-    #             "email_to": self.email,
-    #             "email_from": self.env.user.email,
-    #         }
-
-    #         mail = self.env["mail.mail"].create(email_values)
-    #         mail.send()
-
-    #         self.message_post(
-    #             body="Approval email sent to %s" % self.email,
-    #             message_type="notification",
-    #         )
-
-    #     except Exception as e:
-    #         self.message_post(
-    #             body="Approved but email failed: %s" % str(e),
-    #             message_type="notification",
-    #         )

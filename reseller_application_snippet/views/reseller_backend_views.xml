@@ -36,28 +36,18 @@
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
                                 <div class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
-                                            <!-- Split name using JavaScript -->
-                                            <t t-set="name_parts" t-value="record.name.value.split(' ')"/>
-                                            <t t-if="name_parts.length > 1">
-                                                <!-- First part (first name) -->
-                                                <span t-esc="name_parts[0]"/>
-                                                <br/>
-                                                <!-- Remaining parts (surname) -->
-                                                <span t-esc="name_parts.slice(1).join(' ')"/>
-                                            </t>
-                                            <t t-else="">
-                                                <!-- If only one word, display as is -->
-                                                <field name="name"/>
-                                            </t>
-                                        </strong>
+                                    <div class="o_kanban_record_body">
+                                        <small style="color: blue; font-weight:bold; font-size:16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
+                                            <field name="name"/>
+                                        </small>
+
+
                                         <br/>
                                         <small class="text-muted" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
                                             <field name="company_name"/>
                                         </small>
-                                    </div>
-                                    <div class="o_kanban_record_body">
+
+
                                         <div class="o_kanban_tags_section">
                                             <span class="badge badge-pill" t-attf-class="badge-#{record.state.raw_value == 'approved' ? 'success' : record.state.raw_value == 'rejected' ? 'danger' : record.state.raw_value == 'submitted' ? 'info' : 'secondary'}">
                                                 <field name="state"/>
@@ -65,28 +55,28 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-12" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                <i class="fa fa-envelope-o"/>
+                                                <i class="fa fa-envelope-o" style="margin-right:8px"/>
                                                 <field name="email"/>
                                             </div>
                                         </div>
                                         <t t-if="record.phone.value">
                                             <div class="row">
                                                 <div class="col-12" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                    <i class="fa fa-phone"/>
+                                                    <i class="fa fa-phone" style="margin-right:8px"/>
                                                     <field name="phone"/>
                                                 </div>
                                             </div>
                                         </t>
                                         <div class="row">
                                             <div class="col-12">
-                                                <i class="fa fa-calendar"/>
+                                                <i class="fa fa-calendar" style="margin-right:8px"/>
                                                 <field name="application_date"/>
                                             </div>
                                         </div>
                                         <t t-if="record.approved_by.value">
                                             <div class="row">
                                                 <div class="col-12" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                    <i class="fa fa-user"/>
+                                                    <i class="fa fa-user" style="margin-right:8px"/>
                                                     Approved by:
                                                     <field name="approved_by"/>
                                                 </div>
@@ -95,7 +85,7 @@
                                         <t t-if="record.approved_date.value">
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <i class="fa fa-check"/>
+                                                    <i class="fa fa-check" style="margin-right:8px"/>
                                                     <field name="approved_date"/>
                                                 </div>
                                             </div>
@@ -124,19 +114,17 @@
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
-                                        <div class="o_kanban_inline_block">
-                                            <field name="activity_ids" widget="kanban_activity"/>
-                                        </div>
+                                     
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <t t-if="record.state.raw_value == 'submitted'">
-                                            <button name="action_approve" type="object" class="btn btn-primary btn-sm">
+                                            <button name="action_approve" type="object" class="btn btn-success btn-sm ">
                                                 <i class="fa fa-check"/>
- Approve
+                                                Approve
                                             </button>
-                                            <button name="action_reject" type="object" class="btn btn-secondary btn-sm ml-1">
+                                            <button name="action_reject" type="object" class="btn btn-danger btn-sm ms-2">
                                                 <i class="fa fa-times"/>
- Reject
+                                                 Reject
                                             </button>
                                         </t>
                                     </div>
@@ -182,6 +170,11 @@
                             <field name="rejection_reason" nolabel="1"/>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
