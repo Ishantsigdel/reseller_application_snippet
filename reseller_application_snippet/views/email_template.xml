@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="email_template_reseller_approved" model="mail.template">
+            <field name="name">Reseller Application Approved</field>
+            <field name="model_id" ref="model_reseller_application"/>
+            <field name="subject">Your Reseller Application is Approved!</field>
+            <field name="email_from">${user.email}</field>
+            <field name="email_to">${object.email}</field>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px;">
+                    
+                    <!-- Header -->
+                    <h2 style="color: #007bff; text-align: center;">Congratulations!</h2>
+                    <h3 style="color: #333; text-align: center;">Your Reseller Application is Approved</h3>
+                    
+                    <!-- Main Message -->
+                    <p>Hello <strong>${object.name}</strong>,</p>
+                    <p>Great news! Your reseller application has been approved.</p>
+                    
+                    <!-- Login Details Box -->
+                    <div style="background-color: #f0f8ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <h4 style="margin-top: 0;">Your Login Details:</h4>
+                        <p><strong>Email:</strong> ${object.email}</p>
+                        <p><strong>Portal:</strong> <a href="/my/reseller">Click here to login</a></p>
+                    </div>
+                    
+                    <!-- What to do next -->
+                    <h4>What you can do now:</h4>
+                    <ul>
+                        <li>Login to your reseller portal</li>
+                        <li>View products with special pricing</li>
+                        <li>Place your first order</li>
+                    </ul>
+                    
+                    <!-- Call to Action Button -->
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="/my/reseller" 
+                           style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                            Go to Portal
+                        </a>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <p style="color: #666; font-size: 14px; border-top: 1px solid #eee; padding-top: 15px;">
+                        Application approved on: ${object.approved_date or 'Today'}<br/>
+                        Questions? Contact our support team.
+                    </p>
+                    
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reseller_application_public,reseller.application.public,model_reseller_application,,1,0,1,0
+access_reseller_application_user,reseller.application.user,model_reseller_application,base.group_user,1,1,1,0
+access_reseller_application_manager,reseller.application.manager,model_reseller_application,base.group_system,1,1,1,1
+
+
+access_reseller_application_admin,reseller.application.admin,model_reseller_application,base.group_system,1,1,1,1
+access_reseller_application_portal,reseller.application.portal,model_reseller_application,base.group_portal,1,0,0,0
+
+
+
+
