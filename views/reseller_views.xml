@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Reseller Application Tree View -->
+        <record id="view_reseller_application_tree" model="ir.ui.view">
+            <field name="name">reseller.application.tree</field>
+            <field name="model">reseller.application</field>
+            <field name="arch" type="xml">
+                <tree string="Reseller Applications" decoration-info="state=='submitted'" decoration-success="state=='approved'" decoration-danger="state=='rejected'">
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="company_name"/>
+                    <field name="application_date"/>
+                    <field name="state"/>
+                    <field name="approved_by"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_reseller_application_kanban" model="ir.ui.view">
+            <field name="name">reseller.application.kanban</field>
+            <field name="model">reseller.application</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="company_name"/>
+                    <field name="application_date"/>
+                    <field name="state"/>
+                    <field name="approved_by"/>
+                    <field name="approved_date"/>
+                    <field name="phone"/>
+                    <field name="reason"/>
+                    <field name="rejection_reason"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_body">
+                                        <small style="color: blue; font-weight:bold; font-size:16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
+                                            <field name="name"/>
+                                        </small>
+
+
+                                        <br/>
+                                        <small class="text-muted" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">
+                                            <field name="company_name"/>
+                                        </small>
+
+
+                                        <div class="o_kanban_tags_section">
+                                            <span class="badge badge-pill" t-attf-class="badge-#{record.state.raw_value == 'approved' ? 'success' : record.state.raw_value == 'rejected' ? 'danger' : record.state.raw_value == 'submitted' ? 'info' : 'secondary'}">
+                                                <field name="state"/>
+                                            </span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                <i class="fa fa-envelope-o" style="margin-right:8px"/>
+                                                <field name="email"/>
+                                            </div>
+                                        </div>
+                                        <t t-if="record.phone.value">
+                                            <div class="row">
+                                                <div class="col-12" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                    <i class="fa fa-phone" style="margin-right:8px"/>
+                                                    <field name="phone"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <i class="fa fa-calendar" style="margin-right:8px"/>
+                                                <field name="application_date"/>
+                                            </div>
+                                        </div>
+                                        <t t-if="record.approved_by.value">
+                                            <div class="row">
+                                                <div class="col-12" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                    <i class="fa fa-user" style="margin-right:8px"/>
+                                                    Approved by:
+                                                    <field name="approved_by"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="record.approved_date.value">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <i class="fa fa-check" style="margin-right:8px"/>
+                                                    <field name="approved_date"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="record.reason.value">
+                                            <div class="row mt-2">
+                                                <div class="col-12">
+                                                    <small class="text-muted">
+                                                        <strong>Reason:</strong>
+                                                        <field name="reason"/>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="record.rejection_reason.value">
+                                            <div class="row mt-2">
+                                                <div class="col-12">
+                                                    <small class="text-danger">
+                                                        <strong>Rejection Reason:</strong>
+                                                        <field name="rejection_reason"/>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                     
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <t t-if="record.state.raw_value == 'submitted'">
+                                            <button name="action_approve" type="object" class="btn btn-success btn-sm ">
+                                                <i class="fa fa-check"/>
+                                                Approve
+                                            </button>
+                                            <button name="action_reject" type="object" class="btn btn-danger btn-sm ms-2">
+                                                <i class="fa fa-times"/>
+                                                 Reject
+                                            </button>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <!-- Reseller Application Form View -->
+        <record id="view_reseller_application_form" model="ir.ui.view">
+            <field name="name">reseller.application.form</field>
+            <field name="model">reseller.application</field>
+            <field name="arch" type="xml">
+                <form string="Reseller Application">
+                    <header>
+                        <button name="action_approve" type="object" string="Approve" class="btn-primary" states="submitted"/>
+                        <button name="action_reject" type="object" string="Reject" class="btn-secondary" states="submitted"/>
+                        <button name="action_open_user_record" string="Open Jortal" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'approved')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="email"/>
+                                <field name="phone"/>
+                                <field name="company_name"/>
+                            </group>
+                            <group>
+                                <field name="application_date"/>
+                                <field name="approved_by" readonly="1"/>
+                                <field name="approved_date" readonly="1"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="user_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="reason"/>
+                        </group>
+                        <group string="Rejection Reason" states="rejected">
+                            <field name="rejection_reason" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <!-- Reseller Application Action -->
+        <record id="action_reseller_application" model="ir.actions.act_window">
+            <field name="name">Reseller Applications</field>
+            <field name="res_model">reseller.application</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[]</field>   <!-- no filter -->
+            <field name="context">{}</field>  <!-- no extra context -->
+        </record>
+
+        <menuitem id="menu_reseller_application_root" name="Resellers" sequence="50" web_icon="fa-users"/>
+
+        <menuitem id="menu_reseller_applications" name="Applications" parent="menu_reseller_application_root" action="action_reseller_application" sequence="10" groups="base.group_user"/>
+
+    </data>
+</odoo>
+
+
