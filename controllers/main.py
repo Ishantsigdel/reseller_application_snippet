@@ -29,6 +29,7 @@ class ResellerController(http.Controller):
                     'success': False,
                     'message': 'An application with this email already exists.'
                 })
+                # json.dumps. Converts a Python object (like a dictionary or list) into a JSON-formatted string.
             
             application_data = {
                 'name': name,

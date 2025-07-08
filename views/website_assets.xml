@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
 <!-- <odoo>
     <data>
         <template id="reseller_application_assets" name="Reseller Application Assets" inherit_id="web.assets_frontend">
@@ -9,15 +9,14 @@
         </template>
     </data>
 </odoo> -->
-<odoo>
+<!-- <odoo>
     <data>
        <template id="reseller_application_assets" name="Reseller Assets">
     <link rel="stylesheet" type="text/css" href="/reseller_application/static/src/css/reseller_style.css"/>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" 
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js">
 </script>
     <script type="text/javascript" src="/reseller_application/static/src/js/reseller_application.js"/>
 </template>
     </data>
-</odoo>             
+</odoo>              -->

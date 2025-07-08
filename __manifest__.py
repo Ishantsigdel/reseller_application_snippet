@@ -21,11 +21,9 @@
     'data': [
         'security/ir.model.access.csv',
         'views/reseller_views.xml',
-        'views/email_template.xml',
-        'views/portal_templates.xml',
         'views/website_snippet_data.xml',
         'views/website_snippet_templates.xml',
-        'views/website_assets.xml',
+        # 'views/website_assets.xml',
 
     ],
     'installable': True,
